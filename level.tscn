@@ -1,9 +1,10 @@
-[gd_scene load_steps=7 format=4 uid="uid://veyokj1cfylg"]
+[gd_scene load_steps=8 format=4 uid="uid://veyokj1cfylg"]
 
 [ext_resource type="PackedScene" uid="uid://cxja2qbsil6yj" path="res://player.tscn" id="1_u52ul"]
 [ext_resource type="Texture2D" uid="uid://bdulqosrv6nd2" path="res://Sprout Lands/Tilesets/Hills.png" id="2_vonw3"]
 [ext_resource type="PackedScene" uid="uid://dh1hs0suyp8l2" path="res://rabbit.tscn" id="3_oi3di"]
 [ext_resource type="PackedScene" uid="uid://16nunpgh7450" path="res://gun.tscn" id="4_0b4ue"]
+[ext_resource type="PackedScene" uid="uid://cg5ykug2olrf2" path="res://hat.tscn" id="5_f2txt"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_oi3di"]
 texture = ExtResource("2_vonw3")
@@ -154,3 +155,6 @@ position = Vector2(43, -423)
 [node name="Rabbit4" parent="." instance=ExtResource("3_oi3di")]
 visible = false
 position = Vector2(545, -43)
+[node name="Hat" parent="." instance=ExtResource("5_f2txt")]
+position = Vector2(-792, -482)
+_rabbitScene = ExtResource("3_oi3di")

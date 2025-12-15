@@ -1,0 +1,135 @@
+using Godot;
+using System;
+using static Godot.TextServer;
+
+// Author: Korostelev A. Reviewers: Svetlichny G., Kovaleva E., Tyurina Z.
+// Реализация класса игрока
+public partial class Player : CharacterBody2D 
+{
+	public const float JumpVelocity = -400.0f;
+	public bool Swap = false;
+	private static int BunnyKills = 0;
+	private int BunnyHealth = 100;
+	public int Health { get { return BunnyHealth; }}
+	public static int Kills { get { return BunnyKills; } set { BunnyKills = value; } }
+	public AudioStreamPlayer _musicPlayer;
+	public Godot.Label _hpLabel;
+	public Godot.Label _gameEnd;
+
+	public Button _gameRestart;
+
+
+	public Color _colorGreen =  new Color(0, 0.6f, 0.7f, 1);
+	public Color _colorWhite =  new Color(1, 1, 1, 1);
+	public Color _colorYellow =  new Color(1, 0.8f, 0, 1);
+	public Color _colorRed =  new Color(1, 0, 0, 1);
+
+	[Export] public AnimatedSprite2D Bunny;
+	[Export] public Node2D Gun;
+
+	public override void _Ready()
+	{
+		_musicPlayer = GetNode<AudioStreamPlayer>($"../GameMusic");
+		_musicPlayer.ProcessMode = ProcessModeEnum.Always;
+		_gameEnd = GetNode<Godot.Label>($"./GameEnd");
+		_hpLabel = GetNode<Godot.Label>($"./LabelHP");
+
+		_gameRestart = GetTree().Root.FindChild("GameRestart", true, false) as Button;
+		Bunny.Play("idle");
+	}
+
+	public void BunnyTakeDamage(int damage)
+	{
+		BunnyHealth = BunnyHealth - damage;
+		if (BunnyHealth <= 0)
+		{
+			BunnyHealth = 0;
+			_gameEnd.Visible = true;
+			_gameRestart.Visible = true;
+			GetTree().Paused = true;
+		}
+		UpdateHPColor();
+	}
+
+	public void BunnyHeal()
+	{
+		BunnyHealth = BunnyHealth + 10;
+		UpdateHPColor();
+	}
+	
+	public static void ResetKills()
+	{
+		BunnyKills = 0;
+	}
+	
+	private void UpdateHPColor()
+	{
+		Color targetColor;
+		
+		if (BunnyHealth > 100)
+		{
+			targetColor = _colorGreen;
+		}
+		else if (BunnyHealth >= 60)
+		{
+			targetColor = _colorWhite;
+		}
+		else if (BunnyHealth >= 30)
+		{
+			targetColor = _colorYellow;
+		}
+		else
+		{
+			targetColor = _colorRed;
+		}
+	   
+		_hpLabel.AddThemeColorOverride("font_color", targetColor);
+	}
+
+	private static float Speed = 300.0f;
+	// Обработка передвижения и выстрелов
+	public override void _PhysicsProcess(double delta)
+	{
+		Vector2 velocity = Velocity;
+		Vector2 direction;
+
+		if (Swap)
+		{
+			direction = Input.GetVector("alt_left", "alt_right", "alt_up", "alt_down");
+		}
+		else
+		{
+			direction = Input.GetVector("move_left", "move_right", "move_up", "move_down");
+		}
+
+		if (direction != Vector2.Zero)
+		{
+			velocity.X = direction.X * Speed;
+			velocity.Y = direction.Y * Speed;
+			Bunny.Play("move");
+		}
+		else
+		{
+			velocity.X = Mathf.MoveToward(Velocity.X, 0, Speed);
+			velocity.Y = Mathf.MoveToward(Velocity.Y, 0, Speed);
+			Bunny.Play("idle");
+		}
+
+		if (direction.X < 0)
+		{
+			Bunny.FlipH = false;
+		}
+		else
+		{
+			Bunny.FlipH = true;
+		}
+
+		Speed = 400 - Health;
+
+		Velocity = velocity;
+		MoveAndSlide();
+
+	}
+
+
+}

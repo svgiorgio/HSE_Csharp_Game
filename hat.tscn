@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://cg5ykug2olrf2"]
+
+[ext_resource type="Script" uid="uid://b8mx1p2lxmvvr" path="res://scripts/Hat.cs" id="1_tcvvx"]
+[ext_resource type="Texture2D" uid="uid://dasufmd0fhr7t" path="res://sprites/hat.png" id="2_tcvvx"]
+
+[node name="Hat" type="Node2D"]
+script = ExtResource("1_tcvvx")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.12666667, 0.14473684)
+texture = ExtResource("2_tcvvx")
